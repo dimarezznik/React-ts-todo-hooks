@@ -1,15 +1,15 @@
 import React, { ChangeEvent, FC, useState } from "react";
 import styled from "styled-components";
 import { Input } from "../../Form/Form";
-import { CurrentType } from "../../../App";
+import { CurrentType, ID } from "../../../App";
 
 interface TodoLiType {
   text: string;
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: number) => void;
-  deleteTodo: (e: React.MouseEvent, id: number) => void;
-  markTodo: (e: React.MouseEvent, id: number) => void;
+  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
+  deleteTodo: (e: React.MouseEvent, id: ID) => void;
+  markTodo: (e: React.MouseEvent, id: ID) => void;
   markVariableTodo: boolean;
-  id: number;
+  id: ID;
 }
 
 const TodoLi: FC<TodoLiType> = ({

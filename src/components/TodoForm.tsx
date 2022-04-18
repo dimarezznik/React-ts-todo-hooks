@@ -2,16 +2,16 @@ import React, { ChangeEvent, FC, FormEvent } from "react";
 import styled from "styled-components";
 import Form from "./Form/Form";
 import Todo from "./Todo/Todo";
-import { CurrentType } from "../App";
+import { CurrentType, ID } from "../App";
 
 interface TodoFormProps {
   changeInput: (e: ChangeEvent<HTMLInputElement>) => void;
   addTodo: (e: FormEvent<HTMLButtonElement>) => void;
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: number) => void;
+  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
   textInp: string;
   items: CurrentType[];
-  deleteTodo: (e: React.MouseEvent, id: number) => void;
-  markTodo: (e: React.MouseEvent, id: number) => void;
+  deleteTodo: (e: React.MouseEvent, id: ID) => void;
+  markTodo: (e: React.MouseEvent, id: ID) => void;
   allMarkTodo: (e: FormEvent<HTMLButtonElement>) => void;
   deleteAllMarkTodo: (e: FormEvent<HTMLButtonElement>) => void;
 }

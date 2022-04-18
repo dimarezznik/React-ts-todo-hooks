@@ -1,13 +1,13 @@
 import React, { ChangeEvent, FC } from "react";
 import styled from "styled-components";
 import TodoLi from "./TodoLi/TodoLi";
-import { CurrentType } from "../../App";
+import { CurrentType, ID } from "../../App";
 
 interface TodoType {
   items: CurrentType[];
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: number) => void;
-  deleteTodo: (e: React.MouseEvent, id: number) => void;
-  markTodo: (e: React.MouseEvent, id: number) => void;
+  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
+  deleteTodo: (e: React.MouseEvent, id: ID) => void;
+  markTodo: (e: React.MouseEvent, id: ID) => void;
 }
 
 const Todo: FC<TodoType> = ({ items, changeTodo, deleteTodo, markTodo }) => {

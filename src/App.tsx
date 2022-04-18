@@ -2,8 +2,9 @@ import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import styled from "styled-components";
 import TodoForm from "./components/TodoForm";
 
+export type ID = number;
 export type CurrentType = {
-  id: number;
+  id: ID;
   text: string;
   markVariableTodo: boolean;
 };
@@ -36,36 +37,36 @@ function App() {
   );
 
   const changeTodo = useCallback(
-    (e: ChangeEvent<HTMLInputElement>, id: number) => {
-      const newArr: CurrentType[] = items.map((item) => {
-        if (id === item.id) {
-          item.text = e.target.value;
-        }
-        return item;
-      });
-      setItems(newArr);
+    (e: ChangeEvent<HTMLInputElement>, id: ID) => {
+      setItems(
+        items.map((item: CurrentType) => {
+          if (id === item.id) {
+            return { ...item, text: e.target.value };
+          }
+          return item;
+        })
+      );
     },
     [items]
   );
 
   const deleteTodo = useCallback(
-    (e: React.MouseEvent, id: number) => {
-      const filterItems = items.filter((item) => item.id !== id);
-      setItems(filterItems);
+    (e: React.MouseEvent, id: ID) => {
+      setItems(items.filter((item: CurrentType) => item.id !== id));
     },
     [items]
   );
 
   const markTodo = useCallback(
-    (e: React.MouseEvent, id: number) => {
-      const arr: CurrentType[] = items.map((item: CurrentType) => {
-        if (id === item.id) {
-          item.markVariableTodo = !item.markVariableTodo;
-        }
-        return item;
-      });
-      setItems(arr);
-      console.log(items);
+    (e: React.MouseEvent, id: ID) => {
+      setItems(
+        items.map((item: CurrentType) => {
+          if (id === item.id) {
+            return { ...item, markVariableTodo: !item.markVariableTodo };
+          }
+          return item;
+        })
+      );
     },
     [items]
   );
@@ -73,11 +74,11 @@ function App() {
   const allMarkTodo = useCallback(
     (e: FormEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const arr: CurrentType[] = items.map((item: CurrentType) => {
-        item.markVariableTodo = true;
-        return item;
-      });
-      setItems(arr);
+      setItems(
+        items.map((item: CurrentType) => {
+          return { ...item, markVariableTodo: true };
+        })
+      );
     },
     [items]
   );
@@ -85,8 +86,7 @@ function App() {
   const deleteAllMarkTodo = useCallback(
     (e: FormEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const filterArr = items.filter((items) => !items.markVariableTodo);
-      setItems(filterArr);
+      setItems(items.filter((items) => !items.markVariableTodo));
     },
     [items]
   );
