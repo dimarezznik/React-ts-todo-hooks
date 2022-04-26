@@ -1,32 +1,78 @@
-import React, { ChangeEvent, FC, FormEvent } from "react";
+import React, { ChangeEvent, FC, useCallback, useState } from "react";
 import styled from "styled-components";
 import Form from "./Form/Form";
 import Todo from "./Todo/Todo";
 import { CurrentType, ID } from "../App";
 
-interface TodoFormProps {
-  changeInput: (e: ChangeEvent<HTMLInputElement>) => void;
-  addTodo: (e: FormEvent<HTMLButtonElement>) => void;
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
-  textInp: string;
-  items: CurrentType[];
-  deleteTodo: (e: React.MouseEvent, id: ID) => void;
-  markTodo: (e: React.MouseEvent, id: ID) => void;
-  allMarkTodo: (e: FormEvent<HTMLButtonElement>) => void;
-  deleteAllMarkTodo: (e: FormEvent<HTMLButtonElement>) => void;
-}
+const TodoForm: FC = () => {
+  const [items, setItems] = useState<CurrentType[]>([]);
+  const [textInp, setTextInp] = useState<string>("");
 
-const TodoForm: FC<TodoFormProps> = ({
-  changeInput,
-  textInp,
-  addTodo,
-  items,
-  changeTodo,
-  deleteTodo,
-  markTodo,
-  allMarkTodo,
-  deleteAllMarkTodo,
-}) => {
+  const findId = useCallback(
+    (id: number) => {
+      const findItem = items.find((item) => item.id === id);
+      return findItem;
+    },
+    [items]
+  );
+
+  const changeInput = useCallback((e: ChangeEvent<HTMLInputElement>): void => {
+    setTextInp(e.target.value);
+  }, []);
+
+  const addTodo = useCallback((): void => {
+    if (textInp !== "") {
+      const currentItem: CurrentType = {
+        id: Date.now(),
+        text: textInp,
+        markVariableTodo: false,
+      };
+      setItems([...items, currentItem]);
+      setTextInp("");
+    }
+  }, [items, textInp]);
+
+  const changeTodo = useCallback(
+    (e: ChangeEvent<HTMLInputElement>, id: ID) => {
+      const findEl = findId(id);
+
+      setItems((prev) => {
+        return prev.map((item) =>
+          findEl ? { ...item, text: e.target.value } : item
+        );
+      });
+    },
+    [findId]
+  );
+
+  const deleteTodo = useCallback((id: ID) => {
+    setItems((prev) => prev.filter((item: CurrentType) => item.id !== id));
+  }, []);
+
+  const markTodo = useCallback(
+    (id: ID) => {
+      const findEl = findId(id);
+      setItems((prev) => {
+        return prev.map((item: CurrentType) =>
+          findEl ? { ...item, markVariableTodo: !item.markVariableTodo } : item
+        );
+      });
+    },
+    [findId]
+  );
+
+  const allMarkTodo = useCallback(() => {
+    setItems((prev) => {
+      return prev.map((item: CurrentType) => {
+        return { ...item, markVariableTodo: true };
+      });
+    });
+  }, []);
+
+  const deleteAllMarkTodo = useCallback(() => {
+    setItems((prev) => prev.filter((items) => !items.markVariableTodo));
+  }, []);
+
   return (
     <Div>
       <Form

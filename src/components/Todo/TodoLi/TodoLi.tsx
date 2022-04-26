@@ -1,13 +1,13 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC } from "react";
 import styled from "styled-components";
-import { Input } from "../../Form/Form";
-import { CurrentType, ID } from "../../../App";
+import { ID } from "../../../App";
+import DarkLightDiv from "./DarkLightDiv/DarkLightDiv";
 
 interface TodoLiType {
   text: string;
   changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
-  deleteTodo: (e: React.MouseEvent, id: ID) => void;
-  markTodo: (e: React.MouseEvent, id: ID) => void;
+  deleteTodo: (id: ID) => void;
+  markTodo: (id: ID) => void;
   markVariableTodo: boolean;
   id: ID;
 }
@@ -21,31 +21,19 @@ const TodoLi: FC<TodoLiType> = ({
   markVariableTodo,
 }) => {
   return (
-    <Li onClick={(e) => markTodo(e, id)}>
-      {!markVariableTodo ? (
-        <LightDiv>
-          <LightInput
-            type="text"
-            value={text}
-            onChange={(e) => changeTodo(e, id)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </LightDiv>
-      ) : (
-        <DarkDiv>
-          <DarkInput
-            type="text"
-            value={text}
-            onChange={(e) => changeTodo(e, id)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </DarkDiv>
-      )}
+    <Li>
+      <DarkLightDiv
+        markTodo={markTodo}
+        markVariableTodo={markVariableTodo}
+        changeTodo={changeTodo}
+        text={text}
+        id={id}
+      />
 
       <Span
         onClick={(e) => {
           e.stopPropagation();
-          deleteTodo(e, id);
+          deleteTodo(id);
         }}
       >
         X
@@ -55,26 +43,6 @@ const TodoLi: FC<TodoLiType> = ({
 };
 
 export default TodoLi;
-
-const LightInput = styled(Input)`
-  font-size: 30px;
-  color: white;
-  background-color: lightblue;
-  border: 0;
-  &:focus {
-    outline: none;
-  }
-`;
-const DarkInput = styled(Input)`
-  font-size: 30px;
-  color: white;
-  background-color: darkblue;
-  border: 0;
-
-  &:focus {
-    outline: none;
-  }
-`;
 
 const Li = styled.li`
   position: relative;
@@ -87,20 +55,4 @@ const Li = styled.li`
 const Span = styled.span`
   cursor: pointer;
   color: red;
-`;
-
-const LightDiv = styled.div`
-  border: 1px solid #000;
-  border-radius: 15px;
-  padding: 20px;
-  color: white;
-  background-color: lightblue;
-`;
-
-const DarkDiv = styled.div`
-  border: 1px solid #000;
-  border-radius: 15px;
-  padding: 20px;
-  color: white;
-  background-color: darkblue;
 `;
