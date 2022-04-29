@@ -1,56 +1,45 @@
-import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback } from "react";
 import Btn from "./../Btn/Btn";
 import Inp from "./../Inp/Inp";
 import { todoStorage } from "../../todoStorage";
 
-interface FormProps {
-  changeInput: (e: ChangeEvent<HTMLInputElement>) => void;
-  addTodo: () => void;
-  textInp: string;
-  allMarkTodo: () => void;
-  deleteAllMarkTodo: () => void;
-}
-
-const Form: FC<FormProps> = ({
-  changeInput,
-  textInp,
-  addTodo,
-  allMarkTodo,
-  deleteAllMarkTodo,
-}) => {
-  const [_, updateState] = useState<any>();
-  const forceUpdate = useCallback(() => updateState({}), []);
-
-  console.log(forceUpdate);
-
-  useEffect(() => {
-    todoStorage.subscribe(forceUpdate);
-
-    return todoStorage.unsubscribe(forceUpdate);
-  }, []);
+const Form: FC = () => {
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
   const addTodoMethod = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      addTodo();
+      todoStorage.addTodo();
+      forceUpdate();
     },
-    [addTodo]
+    [forceUpdate]
+  );
+
+  const addToInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      todoStorage.handleInput(e);
+      forceUpdate();
+    },
+    [forceUpdate]
   );
 
   const allMarkTodoMethod = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      allMarkTodo();
+      todoStorage.allMarkTodo();
+      forceUpdate();
     },
-    [allMarkTodo]
+    [forceUpdate]
   );
 
   const deleteAllMarkTodoMethod = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      deleteAllMarkTodo();
+      todoStorage.deleteMarkTodo();
+      forceUpdate();
     },
-    [deleteAllMarkTodo]
+    [forceUpdate]
   );
 
   return (
@@ -58,14 +47,12 @@ const Form: FC<FormProps> = ({
       <Inp
         type="text"
         placeholder="Введите вашу задачу"
-        value={textInp}
-        changeInput={changeInput}
+        value={todoStorage.state.currentItem.text}
+        changeInput={addToInput}
       />
-      <Btn onClick={todoStorage.addTodo}>добавить задачу</Btn>
-      <Btn onClick={(e: MouseEvent) => allMarkTodoMethod(e)}>отметить все</Btn>
-      <Btn onClick={(e: MouseEvent) => deleteAllMarkTodoMethod(e)}>
-        удалить отмеченное
-      </Btn>
+      <Btn onClick={addTodoMethod}>добавить задачу</Btn>
+      <Btn onClick={allMarkTodoMethod}>отметить все</Btn>
+      <Btn onClick={deleteAllMarkTodoMethod}>удалить отмеченное</Btn>
     </form>
   );
 };

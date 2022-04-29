@@ -1,5 +1,5 @@
-import React, { FormEvent } from "react";
-import { CurrentType } from "./App";
+import React from "react";
+import { CurrentType, ID } from "./App";
 
 type Subscription<State> = (state: State) => void;
 
@@ -29,7 +29,7 @@ export class TodoStorage extends BloC<any> {
     return {
       id: 0,
       text: "",
-      check: false,
+      markVariableTodo: false,
     };
   };
 
@@ -49,25 +49,24 @@ export class TodoStorage extends BloC<any> {
     this.notify();
   };
 
-  addTodo = (e: FormEvent): void => {
-    e.preventDefault();
+  addTodo = (): void => {
     if (!this.state.currentItem.text) return;
     this.state = {
       items: [...this.state.items, { ...this.state.currentItem }],
       currentItem: this.clearState(),
     };
-    console.log(this.state);
+
     this.notify();
   };
 
-  deleteTodo = (id: number): void => {
+  deleteTodo = (id: ID): void => {
     this.state.items = this.state.items.filter(
       (item: CurrentType) => item.id !== id
     );
     this.notify();
   };
 
-  textUpdate = (e: React.ChangeEvent<HTMLInputElement>, id: number): void => {
+  textUpdate = (e: React.ChangeEvent<HTMLInputElement>, id: ID): void => {
     this.state.items.forEach((item: CurrentType) => {
       if (item.id === id) {
         item.text = e.target.value;
@@ -76,7 +75,7 @@ export class TodoStorage extends BloC<any> {
     this.notify();
   };
 
-  checkedBool = (id: number): void => {
+  checkedBool = (id: ID): void => {
     this.state.items.forEach((item: CurrentType) => {
       if (item.id === id) {
         item.markVariableTodo
@@ -88,18 +87,14 @@ export class TodoStorage extends BloC<any> {
     this.notify();
   };
 
-  deleteMarkTodo = (e: any): void => {
-    e.preventDefault();
-
+  deleteMarkTodo = (): void => {
     this.state.items = this.state.items.filter(
       (item: CurrentType) => !item.markVariableTodo
     );
     this.notify();
   };
 
-  allMarkTodo = (e: any): void => {
-    e.preventDefault();
-
+  allMarkTodo = (): void => {
     this.state.items.forEach((item: CurrentType) => {
       item.markVariableTodo = true;
     });

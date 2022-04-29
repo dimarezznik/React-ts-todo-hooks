@@ -1,35 +1,33 @@
-import { ChangeEvent, FC } from "react";
+import { FC, useEffect } from "react";
 import TodoLi from "./TodoLi/TodoLi";
-import { CurrentType, ID } from "../../App";
+import { CurrentType } from "../../App";
 import React from "react";
+import { todoStorage } from "../../todoStorage";
 
-interface TodoType {
-  items: CurrentType[];
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
-  deleteTodo: (id: ID) => void;
-  markTodo: (id: ID) => void;
-}
+const Todo: FC = React.memo(() => {
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
 
-const Todo: FC<TodoType> = React.memo(
-  ({ items, changeTodo, deleteTodo, markTodo }) => {
-    return (
-      <ul>
-        {items.map((item) => {
-          return (
-            <TodoLi
-              key={item.id}
-              text={item.text}
-              changeTodo={changeTodo}
-              id={item.id}
-              markVariableTodo={item.markVariableTodo}
-              deleteTodo={deleteTodo}
-              markTodo={markTodo}
-            />
-          );
-        })}
-      </ul>
-    );
-  }
-);
+  useEffect(() => {
+    todoStorage.subscribe(forceUpdate);
+
+    return () => todoStorage.unsubscribe(forceUpdate);
+  }, [todoStorage.state.items]);
+
+  return (
+    <ul>
+      {todoStorage.getState().items.map((item: CurrentType) => {
+        return (
+          <TodoLi
+            key={item.id}
+            text={item.text}
+            id={item.id}
+            markVariableTodo={item.markVariableTodo}
+          />
+        );
+      })}
+    </ul>
+  );
+});
 
 export default Todo;

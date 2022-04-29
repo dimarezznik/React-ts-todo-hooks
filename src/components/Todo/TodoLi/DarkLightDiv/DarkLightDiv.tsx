@@ -1,51 +1,55 @@
-import React, { ChangeEvent, FC, MouseEvent, useCallback } from "react";
+import React, { FC, MouseEvent, useCallback } from "react";
 import styled from "styled-components";
 import { Input } from "../../../Inp/Inp";
 import { ID } from "../../../../App";
+import { todoStorage } from "../../../../todoStorage";
 
 interface DivType {
   text: string;
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
-  markTodo: (id: ID) => void;
   markVariableTodo: boolean;
   id: ID;
 }
 
-const DarkLightDiv: FC<DivType> = ({
-  markTodo,
-  id,
-  changeTodo,
-  markVariableTodo,
-  text,
-}) => {
+const DarkLightDiv: FC<DivType> = ({ id, markVariableTodo, text }) => {
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
   const markTodoMethod = useCallback(
     (e: MouseEvent): void => {
-      markTodo(id);
       e.preventDefault();
+      todoStorage.checkedBool(id);
+      forceUpdate();
     },
-    [id, markTodo]
+    [forceUpdate]
+  );
+
+  const changeTextTodo = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, id: ID) => {
+      todoStorage.textUpdate(e, id);
+      forceUpdate();
+    },
+    [forceUpdate]
   );
 
   return (
     <>
       {!markVariableTodo ? (
-        <LightDiv onClick={(e: MouseEvent) => markTodoMethod(e)}>
+        <LightDiv onClick={markTodoMethod}>
           <LightInput
             type="text"
             value={text}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              changeTodo(e, id)
+              changeTextTodo(e, id)
             }
             onClick={(e: MouseEvent) => e.stopPropagation()}
           />
         </LightDiv>
       ) : (
-        <DarkDiv onClick={(e) => markTodoMethod(e)}>
+        <DarkDiv onClick={markTodoMethod}>
           <DarkInput
             type="text"
             value={text}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              changeTodo(e, id)
+              changeTextTodo(e, id)
             }
             onClick={(e: MouseEvent) => e.stopPropagation()}
           />

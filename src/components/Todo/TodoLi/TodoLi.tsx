@@ -1,39 +1,35 @@
-import React, { ChangeEvent, FC } from "react";
+import React, { FC, useCallback } from "react";
 import styled from "styled-components";
 import { ID } from "../../../App";
 import DarkLightDiv from "./DarkLightDiv/DarkLightDiv";
+import { todoStorage } from "../../../todoStorage";
 
 interface TodoLiType {
   text: string;
-  changeTodo: (e: ChangeEvent<HTMLInputElement>, id: ID) => void;
-  deleteTodo: (id: ID) => void;
-  markTodo: (id: ID) => void;
   markVariableTodo: boolean;
   id: ID;
 }
 
-const TodoLi: FC<TodoLiType> = ({
-  text,
-  changeTodo,
-  id,
-  deleteTodo,
-  markTodo,
-  markVariableTodo,
-}) => {
+const TodoLi: FC<TodoLiType> = ({ text, id, markVariableTodo }) => {
+  const [, updateState] = React.useState<any>();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
+
+  const handleDeleteTodo = useCallback(
+    (id: ID) => {
+      todoStorage.deleteTodo(id);
+      forceUpdate();
+    },
+    [forceUpdate]
+  );
+
   return (
     <Li>
-      <DarkLightDiv
-        markTodo={markTodo}
-        markVariableTodo={markVariableTodo}
-        changeTodo={changeTodo}
-        text={text}
-        id={id}
-      />
+      <DarkLightDiv markVariableTodo={markVariableTodo} text={text} id={id} />
 
       <Span
         onClick={(e) => {
           e.stopPropagation();
-          deleteTodo(id);
+          handleDeleteTodo(id);
         }}
       >
         X
