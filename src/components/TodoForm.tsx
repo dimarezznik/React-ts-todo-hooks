@@ -10,8 +10,7 @@ const TodoForm: FC = () => {
 
   const findId = useCallback(
     (id: number) => {
-      const findItem = items.find((item) => item.id === id);
-      return findItem;
+      return items.find((item) => item.id === id);
     },
     [items]
   );
@@ -34,15 +33,16 @@ const TodoForm: FC = () => {
 
   const changeTodo = useCallback(
     (e: ChangeEvent<HTMLInputElement>, id: ID) => {
-      const findEl = findId(id);
-
-      setItems((prev) => {
-        return prev.map((item) =>
-          findEl ? { ...item, text: e.target.value } : item
-        );
+      setItems((prev: any) => {
+        return prev.map((item: any) => {
+          if (item.id === id) {
+            item.text = e.target.value;
+          }
+          return item;
+        });
       });
     },
-    [findId]
+    [items]
   );
 
   const deleteTodo = useCallback((id: ID) => {
@@ -51,14 +51,16 @@ const TodoForm: FC = () => {
 
   const markTodo = useCallback(
     (id: ID) => {
-      const findEl = findId(id);
-      setItems((prev) => {
-        return prev.map((item: CurrentType) =>
-          findEl ? { ...item, markVariableTodo: !item.markVariableTodo } : item
-        );
+      setItems((prev: any) => {
+        return prev.map((item: any) => {
+          if (item.id === id) {
+            return { ...item, markVariableTodo: !item.markVariableTodo };
+          }
+          return item;
+        });
       });
     },
-    [findId]
+    [items]
   );
 
   const allMarkTodo = useCallback(() => {

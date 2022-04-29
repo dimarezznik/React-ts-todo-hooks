@@ -1,6 +1,7 @@
-import { ChangeEvent, FC, useCallback } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import Btn from "./../Btn/Btn";
 import Inp from "./../Inp/Inp";
+import { todoStorage } from "../../todoStorage";
 
 interface FormProps {
   changeInput: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -17,6 +18,17 @@ const Form: FC<FormProps> = ({
   allMarkTodo,
   deleteAllMarkTodo,
 }) => {
+  const [_, updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
+  console.log(forceUpdate);
+
+  useEffect(() => {
+    todoStorage.subscribe(forceUpdate);
+
+    return todoStorage.unsubscribe(forceUpdate);
+  }, []);
+
   const addTodoMethod = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
@@ -33,10 +45,13 @@ const Form: FC<FormProps> = ({
     [allMarkTodo]
   );
 
-  const deleteAllMarkTodoMethod = useCallback((e: MouseEvent) => {
-    e.preventDefault();
-    deleteAllMarkTodo();
-  }, [deleteAllMarkTodo]);
+  const deleteAllMarkTodoMethod = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      deleteAllMarkTodo();
+    },
+    [deleteAllMarkTodo]
+  );
 
   return (
     <form>
@@ -46,7 +61,7 @@ const Form: FC<FormProps> = ({
         value={textInp}
         changeInput={changeInput}
       />
-      <Btn onClick={(e: MouseEvent) => addTodoMethod(e)}>добавить задачу</Btn>
+      <Btn onClick={todoStorage.addTodo}>добавить задачу</Btn>
       <Btn onClick={(e: MouseEvent) => allMarkTodoMethod(e)}>отметить все</Btn>
       <Btn onClick={(e: MouseEvent) => deleteAllMarkTodoMethod(e)}>
         удалить отмеченное
