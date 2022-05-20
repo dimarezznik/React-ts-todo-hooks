@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FC, useState } from "react";
+import React, { ChangeEvent, FC } from "react";
 import styled from "styled-components";
 import { Input } from "../../Form/Form";
-import { CurrentType, ID } from "../../../App";
+import { ID } from "../../../App";
 
 interface TodoLiType {
   text: string;
@@ -12,49 +12,47 @@ interface TodoLiType {
   id: ID;
 }
 
-const TodoLi: FC<TodoLiType> = ({
-  text,
-  changeTodo,
-  id,
-  deleteTodo,
-  markTodo,
-  markVariableTodo,
-}) => {
-  return (
-    <Li onClick={(e) => markTodo(e, id)}>
-      {!markVariableTodo ? (
-        <LightDiv>
-          <LightInput
-            type="text"
-            value={text}
-            onChange={(e) => changeTodo(e, id)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </LightDiv>
-      ) : (
-        <DarkDiv>
-          <DarkInput
-            type="text"
-            value={text}
-            onChange={(e) => changeTodo(e, id)}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </DarkDiv>
-      )}
+const TodoItem: FC<TodoLiType> = React.memo(
+  ({ text, changeTodo, id, deleteTodo, markTodo, markVariableTodo }) => {
+    const updateTodo = (e: ChangeEvent<HTMLInputElement>) => {
+      changeTodo(e, id);
+    };
 
-      <Span
-        onClick={(e) => {
-          e.stopPropagation();
-          deleteTodo(e, id);
-        }}
-      >
-        X
-      </Span>
-    </Li>
-  );
-};
+    const removeTodo = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      deleteTodo(e, id);
+    };
 
-export default TodoLi;
+    const propagationStop = (e: any) => e.stopPropagation();
+    return (
+      <Li onClick={(e) => markTodo(e, id)}>
+        {!markVariableTodo ? (
+          <LightDiv>
+            <LightInput
+              type="text"
+              value={text}
+              onChange={updateTodo}
+              onClick={propagationStop}
+            />
+          </LightDiv>
+        ) : (
+          <DarkDiv>
+            <DarkInput
+              type="text"
+              value={text}
+              onChange={updateTodo}
+              onClick={propagationStop}
+            />
+          </DarkDiv>
+        )}
+
+        <Span onClick={removeTodo}>X</Span>
+      </Li>
+    );
+  }
+);
+
+export default TodoItem;
 
 const LightInput = styled(Input)`
   font-size: 30px;

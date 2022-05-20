@@ -1,6 +1,7 @@
-import React, { ChangeEvent, FormEvent, useCallback, useState } from "react";
+import React, { FormEvent, useCallback, useState } from "react";
 import styled from "styled-components";
-import TodoForm from "./components/TodoForm";
+import Form from "./components/Form/Form";
+import Todo from "./components/Todo/Todo";
 
 export type ID = number;
 export type CurrentType = {
@@ -11,44 +12,6 @@ export type CurrentType = {
 
 function App() {
   const [items, setItems] = useState<CurrentType[]>([]);
-  const [textInp, setTextInp] = useState<string>("");
-
-  const changeInput = useCallback(
-    (e: ChangeEvent<HTMLInputElement>): void => {
-      setTextInp(e.target.value);
-    },
-    [textInp]
-  );
-
-  const addTodo = useCallback(
-    (e: FormEvent<HTMLButtonElement>): void => {
-      e.preventDefault();
-      if (textInp !== "") {
-        const currentItem: CurrentType = {
-          id: Date.now(),
-          text: textInp,
-          markVariableTodo: false,
-        };
-        setItems([...items, currentItem]);
-        setTextInp("");
-      }
-    },
-    [items, textInp]
-  );
-
-  const changeTodo = useCallback(
-    (e: ChangeEvent<HTMLInputElement>, id: ID) => {
-      setItems(
-        items.map((item: CurrentType) => {
-          if (id === item.id) {
-            return { ...item, text: e.target.value };
-          }
-          return item;
-        })
-      );
-    },
-    [items]
-  );
 
   const deleteTodo = useCallback(
     (e: React.MouseEvent, id: ID) => {
@@ -93,16 +56,17 @@ function App() {
 
   return (
     <Wrapper>
-      <TodoForm
-        changeInput={changeInput}
-        textInp={textInp}
-        addTodo={addTodo}
+      <Form
+        setItems={setItems}
         items={items}
-        changeTodo={changeTodo}
-        deleteTodo={deleteTodo}
-        markTodo={markTodo}
         allMarkTodo={allMarkTodo}
         deleteAllMarkTodo={deleteAllMarkTodo}
+      />
+      <Todo
+        items={items}
+        setItems={setItems}
+        deleteTodo={deleteTodo}
+        markTodo={markTodo}
       />
     </Wrapper>
   );
@@ -114,6 +78,7 @@ const Wrapper = styled.div`
   height: 100vh;
   background: darkorchid;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;

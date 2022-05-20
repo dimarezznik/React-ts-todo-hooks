@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import styled, {createGlobalStyle} from "styled-components";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyled = createGlobalStyle`
   body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input,
@@ -44,15 +44,14 @@ const GlobalStyled = createGlobalStyle`
   abbr, acronym {
     border: 0;
   }
-`
+`;
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <GlobalStyled/>
+    <GlobalStyled />
     <App />
   </React.StrictMode>
 );
-
